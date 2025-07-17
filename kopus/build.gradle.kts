@@ -12,6 +12,7 @@ group = "io.voxkit"
 version = "1.0.0"
 
 kotlin {
+    explicitApi()
 //    jvm()
     androidTarget {
         publishLibraryVariants("release")
@@ -42,12 +43,27 @@ kotlin {
 android {
     namespace = "io.voxkit.kopus"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
+
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/androidMain/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
+
+    dependencies {
+        androidTestImplementation(libs.kotlin.test)
+        androidTestImplementation(libs.android.test.runner)
     }
 }
 

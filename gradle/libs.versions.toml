@@ -6,6 +6,7 @@ android-compileSdk = "35"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+android-test-runner = { module = "androidx.test:runner", version = "1.6.2" }
 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

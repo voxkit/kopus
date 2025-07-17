@@ -8,6 +8,6 @@ class OpusEncoderTest {
     fun testVersion() {
         val encoder = OpusEncoder()
 
-        assertEquals("1.5.1", encoder.version)
+        assertEquals("libopus 1.5.2", encoder.version)
     }
 }

@@ -47,6 +47,18 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                arguments.addAll(
+                    listOf(
+                        "-DOPUS_BUILD_SHARED_LIBRARY=ON",
+                        "-DOPUS_BUILD_TESTING=OFF",
+                        "-DOPUS_BUILD_PROPGRAMS=OFF",
+                    )
+                )
+            }
+        }
     }
 
     compileOptions {

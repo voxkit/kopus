@@ -1,8 +1,8 @@
 #include <jni.h>
 #include <string>
+#include "opus.h"
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_io_voxkit_kopus_OpusEncoder_nativeVersion(JNIEnv *env, jobject) {
-    std::string version = "1.5.1";
-    return env->NewStringUTF(version.c_str());
+extern "C" JNIEXPORT jstring JNICALL Java_io_voxkit_kopus_OpusEncoder_nativeVersion(JNIEnv *env, jobject) {
+    const char *version = opus_get_version_string();
+    return env->NewStringUTF(version);
 }

@@ -8,4 +8,9 @@ class OpusTest {
     fun testVersion() {
         assertEquals("libopus 1.5.2", Opus.version)
     }
+
+    @Test
+    fun testGetErrorString() {
+        assertEquals("success", Opus.getErrorString(0))
+    }
 }

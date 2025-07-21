@@ -1,5 +1,5 @@
 package io.voxkit.kopus
 
-public expect class OpusEncoder() {
+public expect object Opus {
     public val version: String
 }

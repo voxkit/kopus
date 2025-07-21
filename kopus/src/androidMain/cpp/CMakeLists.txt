@@ -17,7 +17,7 @@ set_target_properties(lib_opus PROPERTIES
 include_directories(${OPUS_DIR}/include)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
-        OpusEncoder.cpp)
+        Opus.cpp)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         android

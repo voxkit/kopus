@@ -93,7 +93,7 @@ fun KotlinNativeTarget.configureOpusInterop() {
 }
 
 tasks
-    .filter { it.name.startsWith("cinteropOpus") }
+    .filter { it.name.startsWith("cinteropOpus") && System.getProperty("os.name") == "Mac OS X" }
     .forEach { cinteropTask ->
         val platformName = cinteropTask.name.removePrefix("cinteropOpus")
         val opusBuildDir = project.layout.buildDirectory.dir("opus/$platformName").get()

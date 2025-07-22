@@ -18,7 +18,8 @@ include_directories(${OPUS_DIR}/include)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         Opus.cpp
-        OpusEncoder.cpp)
+        OpusEncoder.cpp
+        OpusDecoder.cpp)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         android

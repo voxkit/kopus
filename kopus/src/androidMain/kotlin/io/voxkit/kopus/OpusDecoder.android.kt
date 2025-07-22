@@ -1,0 +1,62 @@
+package io.voxkit.kopus
+
+public actual fun Opus.decoder(sampleRate: SampleRate, channel: Channel): OpusDecoder =
+    OpusDecoderImpl(sampleRate, channel)
+
+private class OpusDecoderImpl(sampleRate: SampleRate, channel: Channel) : OpusDecoder {
+    private var nativeDecoder: Long
+
+    init {
+        nativeDecoder = nativeInit(
+            sampleRate = sampleRate.value,
+            channels = channel.value,
+        )
+        check(nativeDecoder > 0) { "Failed to initialize Opus decoder." }
+    }
+
+    override fun decode(
+        data: ByteArray?,
+        frameSize: Int,
+        pcm: ShortArray,
+        decodeFec: Boolean,
+    ): Int {
+        check(nativeDecoder > 0) { "Decoder has been closed." }
+        return nativeDecode(nativeDecoder, data, frameSize, pcm, decodeFec)
+    }
+
+    override fun decode(
+        data: ByteArray?,
+        frameSize: Int,
+        pcm: FloatArray,
+        decodeFec: Boolean,
+    ): Int {
+        check(nativeDecoder > 0) { "Decoder has been closed." }
+        return nativeDecodeFloat(nativeDecoder, data, frameSize, pcm, decodeFec)
+    }
+
+    override fun close() {
+        check(nativeDecoder > 0) { "Decoder has already been closed." }
+        nativeClose(nativeDecoder)
+        nativeDecoder = 0L
+    }
+
+    private external fun nativeInit(sampleRate: Int, channels: Int): Long
+
+    private external fun nativeDecode(
+        nativeDecoder: Long,
+        data: ByteArray?,
+        frameSize: Int,
+        pcm: ShortArray,
+        decodeFec: Boolean,
+    ): Int
+
+    private external fun nativeDecodeFloat(
+        nativeDecoder: Long,
+        data: ByteArray?,
+        frameSize: Int,
+        pcm: FloatArray,
+        decodeFec: Boolean,
+    ): Int
+
+    private external fun nativeClose(nativeDecoder: Long)
+}

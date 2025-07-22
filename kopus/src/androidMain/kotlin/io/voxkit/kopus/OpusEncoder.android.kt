@@ -2,17 +2,17 @@ package io.voxkit.kopus
 
 public actual fun Opus.encoder(
     sampleRate: SampleRate,
-    channel: Channel,
+    channels: Channels,
     application: OpusApplication
 ): OpusEncoder = OpusEncoderImpl(
     sampleRate = sampleRate,
-    channel = channel,
+    channels = channels,
     application = application
 )
 
 private class OpusEncoderImpl(
     sampleRate: SampleRate,
-    channel: Channel,
+    channels: Channels,
     application: OpusApplication
 ) : OpusEncoder {
     private var nativeEncoder: Long
@@ -20,7 +20,7 @@ private class OpusEncoderImpl(
     init {
         nativeEncoder = nativeInit(
             sampleRate = sampleRate.value,
-            channels = channel.value,
+            channels = channels.value,
             application = application.value,
         )
         check(nativeEncoder > 0) { "Failed to initialize Opus encoder." }

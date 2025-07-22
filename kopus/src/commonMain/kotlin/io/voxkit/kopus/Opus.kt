@@ -21,7 +21,7 @@ public expect object Opus {
 /**
  * Represents the number of audio channels.
  */
-public enum class Channel(internal val value: Int) { MONO(1), STEREO(2) }
+public enum class Channels(internal val value: Int) { MONO(1), STEREO(2) }
 
 /**
  * Represents supported Opus sample rates.

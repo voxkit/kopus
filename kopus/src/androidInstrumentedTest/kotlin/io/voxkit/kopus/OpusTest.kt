@@ -20,7 +20,7 @@ class OpusTest {
     fun testCreateEncoder() {
         val encoder = Opus.encoder(
             SampleRate.RATE_48K,
-            channel = Channel.STEREO,
+            channels = Channels.STEREO,
             application = OpusApplication.AUDIO,
         )
         encoder.close()
@@ -28,14 +28,14 @@ class OpusTest {
 
     @Test
     fun testCreateDecoder() {
-        val decoder = Opus.decoder(SampleRate.RATE_48K, channel = Channel.STEREO)
+        val decoder = Opus.decoder(SampleRate.RATE_48K, channels = Channels.STEREO)
         decoder.close()
     }
 
     @Test
     fun testEncodeAndDecodeShorts() {
         val sampleRate = SampleRate.RATE_48K
-        val channels = Channel.STEREO
+        val channels = Channels.STEREO
         val timeMillis = 20L
         val frameSize = sampleRate.value / 1000 * 20 // 20 ms frame size
         val pcmInput = generateSineWaveOfShorts(
@@ -67,7 +67,7 @@ class OpusTest {
     @Test
     fun testEncodeAndDecodeFloats() {
         val sampleRate = SampleRate.RATE_48K
-        val channels = Channel.STEREO
+        val channels = Channels.STEREO
         val timeMillis = 20L
         val frameSize = sampleRate.value / 1000 * 20 // 20 ms frame size
         val pcmInput = generateSineWaveOfFloats(
@@ -79,12 +79,12 @@ class OpusTest {
         val decodedBuffer = FloatArray(frameSize * 2) // 2 channels
 
         // Encode
-        Opus.encoder(sampleRate, Channel.STEREO, OpusApplication.AUDIO).use { encoder ->
+        Opus.encoder(sampleRate, Channels.STEREO, OpusApplication.AUDIO).use { encoder ->
             val encodedLength = encoder.encode(pcmInput, frameSize, encodedBuffer)
             assertTrue(encodedLength > 0, "Encoding failed, length should be greater than 0")
 
             // Decode
-            Opus.decoder(sampleRate, Channel.STEREO).use { decoder ->
+            Opus.decoder(sampleRate, Channels.STEREO).use { decoder ->
                 val encodedData = encodedBuffer.copyOf(encodedLength)
                 val numberOfDecodedSamples = decoder.decode(encodedData, frameSize, decodedBuffer)
                 assertEquals(

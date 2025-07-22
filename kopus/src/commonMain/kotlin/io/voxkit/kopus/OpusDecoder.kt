@@ -49,7 +49,7 @@ public interface OpusDecoder : AutoCloseable {
  * Creates a new [OpusDecoder] instance.
  *
  * @param sampleRate Sample rate of output audio.
- * @param channel Number of audio channels: mono or stereo.
+ * @param channels Number of audio channels: mono or stereo.
  * @return An [OpusDecoder] instance.
  */
-public expect fun Opus.decoder(sampleRate: SampleRate, channel: Channel): OpusDecoder
+public expect fun Opus.decoder(sampleRate: SampleRate, channels: Channels): OpusDecoder

@@ -1,15 +1,15 @@
 package io.voxkit.kopus
 
-public actual fun Opus.decoder(sampleRate: SampleRate, channel: Channel): OpusDecoder =
-    OpusDecoderImpl(sampleRate, channel)
+public actual fun Opus.decoder(sampleRate: SampleRate, channels: Channels): OpusDecoder =
+    OpusDecoderImpl(sampleRate, channels)
 
-private class OpusDecoderImpl(sampleRate: SampleRate, channel: Channel) : OpusDecoder {
+private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : OpusDecoder {
     private var nativeDecoder: Long
 
     init {
         nativeDecoder = nativeInit(
             sampleRate = sampleRate.value,
-            channels = channel.value,
+            channels = channels.value,
         )
         check(nativeDecoder > 0) { "Failed to initialize Opus decoder." }
     }

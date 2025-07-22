@@ -43,12 +43,12 @@ public interface OpusEncoder : AutoCloseable {
  * Creates a new [OpusEncoder] instance.
  *
  * @param sampleRate Sample rate of input audio.
- * @param channel Number of audio channels: mono or stereo.
+ * @param channels Number of audio channels: mono or stereo.
  * @param application Opus application mode.
  * @return An [OpusEncoder] instance.
  */
 public expect fun Opus.encoder(
     sampleRate: SampleRate,
-    channel: Channel,
+    channels: Channels,
     application: OpusApplication
 ): OpusEncoder

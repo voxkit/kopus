@@ -1,7 +1,5 @@
 package io.voxkit.kopus
 
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.*
 import opus.OPUS_OK
 import opus.opus_decode

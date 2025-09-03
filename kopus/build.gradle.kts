@@ -25,7 +25,6 @@ kotlin {
     iosX64 { configureOpusInterop() }
     iosArm64 { configureOpusInterop() }
     iosSimulatorArm64 { configureOpusInterop() }
-//    linuxX64()
 
     sourceSets {
         val commonMain by getting {

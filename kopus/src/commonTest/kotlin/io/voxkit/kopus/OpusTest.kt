@@ -118,7 +118,7 @@ class OpusTest {
         durationMillis: Long = 1000L,
     ): FloatArray {
         val numSamples = (sampleRate.value / 1000 * durationMillis).toInt()
-        return sinWave(sampleRate, frequency, channels, amplitude = Float.MAX_VALUE)
+        return sinWave(sampleRate, frequency, channels, amplitude = 1.0f)
             .take(numSamples * channels)
             .toList()
             .toFloatArray()

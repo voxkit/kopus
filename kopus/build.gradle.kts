@@ -168,7 +168,7 @@ tasks
                     "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$libDir",
                 )
 
-                println("Configuring OPUS for $platformName with command: $cmakeBin ${args?.joinToString(" ")}")
+                logger.lifecycle("Configuring OPUS for $platformName with command: $cmakeBin ${args?.joinToString(" ")}")
             }
 
             commandLine(cmakeBin)

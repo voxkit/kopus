@@ -25,7 +25,6 @@ kotlin {
     iosX64 { configureOpusInterop() }
     iosArm64 { configureOpusInterop() }
     iosSimulatorArm64 { configureOpusInterop() }
-//    linuxX64()
 
     sourceSets {
         val commonMain by getting {
@@ -125,6 +124,10 @@ tasks
             commandLine("xcode-select", "-print-path")
         }.standardOutput.asText.get().trim()
 
+        val cmakeBin = providers.exec {
+            commandLine("which", "cmake")
+        }.standardOutput.asText.get().trim()
+
         val configureOpusTask = tasks.register<Exec>("configureOpusLib$platformName") {
             group = "build"
             description = "Builds the OPUS library for $platformName target."
@@ -164,9 +167,11 @@ tasks
                     "-DCMAKE_OSX_SYSROOT=${osxSysroot}/Platforms/$xcodePlatform.platform/Developer/SDKs/$xcodePlatform.sdk",
                     "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$libDir",
                 )
+
+                logger.lifecycle("Configuring OPUS for $platformName with command: $cmakeBin ${args?.joinToString(" ")}")
             }
 
-            commandLine("cmake")
+            commandLine(cmakeBin)
         }
 
         val buildOpusTask = tasks.register<Exec>("buildOpusLib$platformName") {
@@ -176,7 +181,7 @@ tasks
             outputs.file(cmakeDir.file("libopus.a"))
             dependsOn(configureOpusTask.get())
 
-            commandLine("cmake", "--build", cmakeDir)
+            commandLine(cmakeBin, "--build", cmakeDir)
         }
 
         cinteropTask.dependsOn(buildOpusTask.get(), generateOpusDefTask.get())
@@ -186,6 +191,7 @@ tasks.register<Delete>("cleanCxx") {
     dependsOn("externalNativeBuildCleanDebug")
     delete(project.file(".cxx"))
 }
+
 tasks.named("clean") { dependsOn("cleanCxx") }
 
 mavenPublishing {

@@ -203,7 +203,7 @@ mavenPublishing {
 
     pom {
         name = "Kotlin OPUS Codec"
-        description = "A Kotlin multiplatform OPUS audio codec."
+        description = "A Kotlin Multiplatform OPUS audio codec."
         inceptionYear = "2025"
         url = "https://github.com/voxkit/kopus"
         licenses {

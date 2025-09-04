@@ -7,7 +7,7 @@ if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
 fi
 
 # Get the most recent version tag
-recent_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+recent_tag=$(git describe --tags --abbrev=0)
 
 # Check if a tag was found
 if [ -z "$recent_tag" ]; then

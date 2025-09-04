@@ -32,6 +32,7 @@ jobs:
         with:
           log-accepted-android-sdk-licenses: false
 
+      - run: chmod +x ./version-tag.sh
       - name: Extract release version from tag
         run: echo version=$(./version-tag.sh) > version.properties
 

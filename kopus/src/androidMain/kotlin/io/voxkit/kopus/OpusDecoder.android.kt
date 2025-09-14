@@ -4,14 +4,14 @@ public actual fun Opus.decoder(sampleRate: SampleRate, channels: Channels): Opus
     OpusDecoderImpl(sampleRate, channels)
 
 private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : OpusDecoder {
-    private var nativeDecoder: Long
+    private var nativeDecoderPtr: Long
 
     init {
-        nativeDecoder = nativeInit(
+        nativeDecoderPtr = nativeInit(
             sampleRate = sampleRate.value,
             channels = channels.value,
         )
-        check(nativeDecoder > 0) { "Failed to initialize Opus decoder." }
+        check(nativeDecoderPtr != 0L) { "Failed to initialize Opus decoder." }
     }
 
     override fun decode(
@@ -20,8 +20,8 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
         pcm: ShortArray,
         decodeFec: Boolean,
     ): Int {
-        check(nativeDecoder > 0) { "Decoder has been closed." }
-        return nativeDecode(nativeDecoder, data, frameSize, pcm, decodeFec)
+        check(nativeDecoderPtr != 0L) { "Decoder has been closed." }
+        return nativeDecode(nativeDecoderPtr, data, frameSize, pcm, decodeFec)
     }
 
     override fun decode(
@@ -30,20 +30,20 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
         pcm: FloatArray,
         decodeFec: Boolean,
     ): Int {
-        check(nativeDecoder > 0) { "Decoder has been closed." }
-        return nativeDecodeFloat(nativeDecoder, data, frameSize, pcm, decodeFec)
+        check(nativeDecoderPtr != 0L) { "Decoder has been closed." }
+        return nativeDecodeFloat(nativeDecoderPtr, data, frameSize, pcm, decodeFec)
     }
 
     override fun close() {
-        check(nativeDecoder > 0) { "Decoder has already been closed." }
-        nativeClose(nativeDecoder)
-        nativeDecoder = 0L
+        check(nativeDecoderPtr != 0L) { "Decoder has already been closed." }
+        nativeClose(nativeDecoderPtr)
+        nativeDecoderPtr = 0L
     }
 
     private external fun nativeInit(sampleRate: Int, channels: Int): Long
 
     private external fun nativeDecode(
-        nativeDecoder: Long,
+        nativeDecoderPtr: Long,
         data: ByteArray?,
         frameSize: Int,
         pcm: ShortArray,
@@ -51,12 +51,12 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
     ): Int
 
     private external fun nativeDecodeFloat(
-        nativeDecoder: Long,
+        nativeDecoderPtr: Long,
         data: ByteArray?,
         frameSize: Int,
         pcm: FloatArray,
         decodeFec: Boolean,
     ): Int
 
-    private external fun nativeClose(nativeDecoder: Long)
+    private external fun nativeClose(nativeDecoderPtr: Long)
 }

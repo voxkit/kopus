@@ -34,7 +34,7 @@ private class OpusEncoderImpl(
             error.value
         }
 
-        require(result == OPUS_OK) {
+        check(result == OPUS_OK) {
             "Failed to create Opus encoder: ${Opus.getErrorString(result)}"
         }
     }

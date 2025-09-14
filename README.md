@@ -18,7 +18,7 @@ Add the dependency to your `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("io.voxkit:kopus:1.0.0")
+    implementation("io.voxkit:kopus:$kopus_version")
 }
 ```
 

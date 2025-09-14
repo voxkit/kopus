@@ -11,7 +11,7 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
             sampleRate = sampleRate.value,
             channels = channels.value,
         )
-        check(nativeDecoder > 0) { "Failed to initialize Opus decoder." }
+        check(nativeDecoder != 0L) { "Failed to initialize Opus decoder." }
     }
 
     override fun decode(
@@ -20,7 +20,7 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
         pcm: ShortArray,
         decodeFec: Boolean,
     ): Int {
-        check(nativeDecoder > 0) { "Decoder has been closed." }
+        check(nativeDecoder != 0L) { "Decoder has been closed." }
         return nativeDecode(nativeDecoder, data, frameSize, pcm, decodeFec)
     }
 
@@ -30,12 +30,12 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
         pcm: FloatArray,
         decodeFec: Boolean,
     ): Int {
-        check(nativeDecoder > 0) { "Decoder has been closed." }
+        check(nativeDecoder != 0L) { "Decoder has been closed." }
         return nativeDecodeFloat(nativeDecoder, data, frameSize, pcm, decodeFec)
     }
 
     override fun close() {
-        check(nativeDecoder > 0) { "Decoder has already been closed." }
+        check(nativeDecoder != 0L) { "Decoder has already been closed." }
         nativeClose(nativeDecoder)
         nativeDecoder = 0L
     }

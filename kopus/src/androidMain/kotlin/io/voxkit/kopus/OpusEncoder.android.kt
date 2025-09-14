@@ -23,7 +23,7 @@ private class OpusEncoderImpl(
             channels = channels.value,
             application = application.value,
         )
-        check(nativeEncoder > 0) { "Failed to initialize Opus encoder." }
+        check(nativeEncoder != 0L) { "Failed to initialize Opus encoder." }
     }
 
     override fun encode(
@@ -31,7 +31,7 @@ private class OpusEncoderImpl(
         frameSize: Int,
         output: ByteArray
     ): Int {
-        check(nativeEncoder > 0) { "Encoder has been closed." }
+        check(nativeEncoder != 0L) { "Encoder has been closed." }
         return nativeEncode(nativeEncoder, pcm, frameSize, output)
     }
 
@@ -40,12 +40,12 @@ private class OpusEncoderImpl(
         frameSize: Int,
         output: ByteArray
     ): Int {
-        check(nativeEncoder > 0) { "Encoder has been closed." }
+        check(nativeEncoder != 0L) { "Encoder has been closed." }
         return nativeEncodeFloat(nativeEncoder, pcm, frameSize, output)
     }
 
     override fun close() {
-        check(nativeEncoder > 0) { "Encoder has already been closed." }
+        check(nativeEncoder != 0L) { "Encoder has already been closed." }
         nativeClose(nativeEncoder)
         nativeEncoder = 0L
     }

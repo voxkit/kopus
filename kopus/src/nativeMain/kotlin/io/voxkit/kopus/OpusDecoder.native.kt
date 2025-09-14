@@ -26,7 +26,7 @@ private class OpusDecoderImpl(sampleRate: SampleRate, channels: Channels) : Opus
             error.value
         }
 
-        require(result == OPUS_OK) {
+        check(result == OPUS_OK) {
             "Failed to create Opus decoder: ${Opus.getErrorString(result)}"
         }
     }

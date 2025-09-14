@@ -70,5 +70,5 @@ private class OpusEncoderImpl(
         output: ByteArray
     ): Int
 
-    private external fun nativeClose(nativeEncoder: Long)
+    private external fun nativeClose(nativeEncoderPtr: Long)
 }

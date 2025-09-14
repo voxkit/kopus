@@ -15,15 +15,15 @@ private class OpusEncoderImpl(
     channels: Channels,
     application: OpusApplication
 ) : OpusEncoder {
-    private var nativeEncoder: Long
+    private var nativeEncoderPtr: Long
 
     init {
-        nativeEncoder = nativeInit(
+        nativeEncoderPtr = nativeInit(
             sampleRate = sampleRate.value,
             channels = channels.value,
             application = application.value,
         )
-        check(nativeEncoder != 0L) { "Failed to initialize Opus encoder." }
+        check(nativeEncoderPtr != 0L) { "Failed to initialize Opus encoder." }
     }
 
     override fun encode(
@@ -31,8 +31,8 @@ private class OpusEncoderImpl(
         frameSize: Int,
         output: ByteArray
     ): Int {
-        check(nativeEncoder != 0L) { "Encoder has been closed." }
-        return nativeEncode(nativeEncoder, pcm, frameSize, output)
+        check(nativeEncoderPtr != 0L) { "Encoder has been closed." }
+        return nativeEncode(nativeEncoderPtr, pcm, frameSize, output)
     }
 
     override fun encode(
@@ -40,14 +40,14 @@ private class OpusEncoderImpl(
         frameSize: Int,
         output: ByteArray
     ): Int {
-        check(nativeEncoder != 0L) { "Encoder has been closed." }
-        return nativeEncodeFloat(nativeEncoder, pcm, frameSize, output)
+        check(nativeEncoderPtr != 0L) { "Encoder has been closed." }
+        return nativeEncodeFloat(nativeEncoderPtr, pcm, frameSize, output)
     }
 
     override fun close() {
-        check(nativeEncoder != 0L) { "Encoder has already been closed." }
-        nativeClose(nativeEncoder)
-        nativeEncoder = 0L
+        check(nativeEncoderPtr != 0L) { "Encoder has already been closed." }
+        nativeClose(nativeEncoderPtr)
+        nativeEncoderPtr = 0L
     }
 
     private external fun nativeInit(
@@ -57,14 +57,14 @@ private class OpusEncoderImpl(
     ): Long
 
     private external fun nativeEncode(
-        nativeEncoder: Long,
+        nativeEncoderPtr: Long,
         pcm: ShortArray,
         frameSize: Int,
         output: ByteArray
     ): Int
 
     private external fun nativeEncodeFloat(
-        nativeEncoder: Long,
+        nativeEncoderPtr: Long,
         pcm: FloatArray,
         frameSize: Int,
         output: ByteArray

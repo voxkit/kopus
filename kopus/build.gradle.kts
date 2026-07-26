@@ -99,17 +99,21 @@ fun KotlinNativeTarget.configureOpusInterop() {
     }
 }
 
-val cmakeBin = androidComponents.sdkComponents.sdkDirectory.get()
-    .file("cmake/$cmakeVersion/bin/cmake")
-    .asFile
-    .absolutePath
-val xcodeDeveloperDir = providers.exec {
+val androidSdkCmake = androidComponents.sdkComponents.sdkDirectory.map {
+    it.file("cmake/$cmakeVersion/bin/cmake").asFile
+}
+val xcodeDeveloperDirProvider = providers.exec {
     commandLine("xcode-select", "-print-path")
-}.standardOutput.asText.get().trim()
+}.standardOutput.asText.map { it.trim() }
 
 tasks
     .filter { it.name.startsWith("cinteropOpus") && System.getProperty("os.name") == "Mac OS X" }
     .forEach { cinteropTask ->
+        val cmakeBin = androidSdkCmake.get()
+            .takeIf { it.isFile }
+            ?.absolutePath
+            ?: "cmake"
+        val xcodeDeveloperDir = xcodeDeveloperDirProvider.get()
         val platformName = cinteropTask.name.removePrefix("cinteropOpus")
         val opusBuildDir = project.layout.buildDirectory.dir("opus/$platformName").get()
         val cmakeDir = opusBuildDir.dir("cmake")

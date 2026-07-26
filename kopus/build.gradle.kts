@@ -77,7 +77,7 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/androidMain/cpp/CMakeLists.txt")
-            version = "3.22.1"
+            version = libs.versions.cmake.get()
         }
     }
 
@@ -97,9 +97,21 @@ fun KotlinNativeTarget.configureOpusInterop() {
     }
 }
 
+val androidSdkCmake = androidComponents.sdkComponents.sdkDirectory.map {
+    it.file("cmake/${libs.versions.cmake.get()}/bin/cmake").asFile
+}
+val xcodeDeveloperDirProvider = providers.exec {
+    commandLine("xcode-select", "-print-path")
+}.standardOutput.asText.map { it.trim() }
+
 tasks
     .filter { it.name.startsWith("cinteropOpus") && System.getProperty("os.name") == "Mac OS X" }
     .forEach { cinteropTask ->
+        val cmakeBin = androidSdkCmake.get()
+            .takeIf { it.isFile }
+            ?.absolutePath
+            ?: "cmake"
+        val xcodeDeveloperDir = xcodeDeveloperDirProvider.get()
         val platformName = cinteropTask.name.removePrefix("cinteropOpus")
         val opusBuildDir = project.layout.buildDirectory.dir("opus/$platformName").get()
         val cmakeDir = opusBuildDir.dir("cmake")
@@ -126,14 +138,6 @@ tasks
 
         val opusSourcesDir = rootProject.file("opus")
 
-        val osxSysroot = providers.exec {
-            commandLine("xcode-select", "-print-path")
-        }.standardOutput.asText.get().trim()
-
-        val cmakeBin = providers.exec {
-            commandLine("which", "cmake")
-        }.standardOutput.asText.get().trim()
-
         val configureOpusTask = tasks.register<Exec>("configureOpusLib$platformName") {
             group = "build"
             description = "Builds the OPUS library for $platformName target."
@@ -158,26 +162,19 @@ tasks
                 else -> throw IllegalArgumentException("Unsupported platform: $platformName")
             }
 
-            doFirst {
-                cmakeDir.asFile.mkdirs()
-
-                args(
-                    "-S",
-                    opusSourcesDir,
-                    "-B",
-                    cmakeDir,
-                    "-G",
-                    "Unix Makefiles",
-                    "-DCMAKE_SYSTEM_NAME=$cmakeSystemName",
-                    "-DCMAKE_OSX_ARCHITECTURES=$cmakeOsxArch",
-                    "-DCMAKE_OSX_SYSROOT=${osxSysroot}/Platforms/$xcodePlatform.platform/Developer/SDKs/$xcodePlatform.sdk",
-                    "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$libDir",
-                )
-
-                logger.lifecycle("Configuring OPUS for $platformName with command: $cmakeBin ${args?.joinToString(" ")}")
-            }
-
             commandLine(cmakeBin)
+            args(
+                "-S",
+                opusSourcesDir,
+                "-B",
+                cmakeDir,
+                "-G",
+                "Unix Makefiles",
+                "-DCMAKE_SYSTEM_NAME=$cmakeSystemName",
+                "-DCMAKE_OSX_ARCHITECTURES=$cmakeOsxArch",
+                "-DCMAKE_OSX_SYSROOT=$xcodeDeveloperDir/Platforms/$xcodePlatform.platform/Developer/SDKs/$xcodePlatform.sdk",
+                "-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$libDir",
+            )
         }
 
         val buildOpusTask = tasks.register<Exec>("buildOpusLib$platformName") {

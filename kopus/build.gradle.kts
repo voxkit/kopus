@@ -18,8 +18,6 @@ version = versionProperties["version"] ?: "0.0.0"
 
 logger.lifecycle("Selected version name: ${project.version}")
 
-val cmakeVersion = "3.22.1"
-
 kotlin {
     explicitApi()
 //    jvm()
@@ -79,7 +77,7 @@ android {
     externalNativeBuild {
         cmake {
             path = file("src/androidMain/cpp/CMakeLists.txt")
-            version = cmakeVersion
+            version = libs.versions.cmake.get()
         }
     }
 
@@ -100,7 +98,7 @@ fun KotlinNativeTarget.configureOpusInterop() {
 }
 
 val androidSdkCmake = androidComponents.sdkComponents.sdkDirectory.map {
-    it.file("cmake/$cmakeVersion/bin/cmake").asFile
+    it.file("cmake/${libs.versions.cmake.get()}/bin/cmake").asFile
 }
 val xcodeDeveloperDirProvider = providers.exec {
     commandLine("xcode-select", "-print-path")
